@@ -1,0 +1,20 @@
+import { User } from 'src/users/user.entity/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+
+@Entity()
+export class Book {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  title: string;
+
+  @Column()
+  author: string;
+
+  @Column()
+  description: string;
+
+  @ManyToOne(() => User, (user) => user.books)
+  owner: User;
+}
