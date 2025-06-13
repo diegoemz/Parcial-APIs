@@ -1,99 +1,169 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+¡Claro! Aquí tienes un `README.md` bien estructurado para tu proyecto **BookSwap API**, siguiendo los puntos que mencionaste:
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+````markdown
+# 📚 BookSwap API
 
-## Description
+Una API construida con **NestJS** que permite a los usuarios intercambiar libros. Los visitantes pueden ver todos los libros disponibles sin autenticación, mientras que los usuarios autenticados pueden publicar nuevos libros.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 🎯 Objetivo del Proyecto
 
-```bash
-$ npm install
-```
+Diseñar y desarrollar una API RESTful que permita:
 
-## Compile and run the project
+- Registrar usuarios manualmente en base de datos.
+- Autenticarse mediante JWT.
+- Publicar libros por parte de usuarios autenticados.
+- Consultar libros públicamente.
 
-```bash
-# development
-$ npm run start
+---
 
-# watch mode
-$ npm run start:dev
+## 🛠️ Tecnologías Utilizadas
 
-# production mode
-$ npm run start:prod
-```
+- [NestJS](https://nestjs.com/)
+- [TypeORM](https://typeorm.io/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [JWT](https://jwt.io/)
+- [Swagger](https://swagger.io/)
 
-## Run tests
+---
+
+## 🧱 Estructura del Proyecto
 
 ```bash
-# unit tests
-$ npm run test
+src/
+├── auth/
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   ├── jwt-auth.guard.ts
+│   ├── jwt.strategy.ts
+│   └── auth.module.ts
+├── books/
+│   ├── dto/create-book.dto.ts
+│   ├── books.controller.ts
+│   ├── books.service.ts
+│   ├── book.entity.ts
+│   └── books.module.ts
+├── public/
+│   ├── public.controller.ts
+│   └── public.module.ts
+├── users/
+│   ├── user.entity.ts
+│   ├── users.controller.ts
+│   ├── users.service.ts
+│   └── users.module.ts
+````
 
-# e2e tests
-$ npm run test:e2e
+---
 
-# test coverage
-$ npm run test:cov
+## 🗃️ Entidades
+
+### 👤 User
+
+| Campo    | Tipo   | Descripción                 |
+| -------- | ------ | --------------------------- |
+| id       | number | Clave primaria autogenerada |
+| email    | string | Único                       |
+| name     | string | Nombre del usuario          |
+| password | string | Contraseña sin encriptar    |
+
+> Nota: Los usuarios se insertan directamente en la base de datos (semilla). No hay registro desde Postman ni frontend.
+
+### 📘 Book
+
+| Campo       | Tipo   | Descripción                           |
+| ----------- | ------ | ------------------------------------- |
+| id          | number | Clave primaria autogenerada           |
+| title       | string | Título del libro                      |
+| author      | string | Autor del libro                       |
+| description | string | Descripción del libro                 |
+| owner       | User   | Relación ManyToOne con entidad `User` |
+
+---
+
+## 🔐 Autenticación
+
+* Autenticación basada en JWT.
+* `@nestjs/jwt` + estrategia `JwtStrategy`.
+* Protección de rutas con `AuthGuard`.
+
+### 🔑 Login simulado
+
+* Endpoint: `POST /auth/login`
+* Enviar en el body: `{ "email": "usuario@email.com", "password": "1234" }`
+* Respuesta: token JWT.
+
+---
+
+## 📦 Rutas de la API
+
+### 📖 PublicController `/public`
+
+* `GET /public/books`:
+  Retorna todos los libros con su respectivo dueño (solo nombre).
+  **No requiere autenticación.**
+
+### 📚 BooksController `/books`
+
+* `POST /books`:
+  Permite a usuarios autenticados publicar libros.
+  **Requiere token Bearer.**
+
+---
+
+## 🔄 Ejemplo de flujo
+
+1. Iniciar sesión en `/auth/login` con email y password → recibir token.
+2. Usar el token en el header para enviar un libro:
+
+   ```
+   Authorization: Bearer <token>
+   ```
+3. Enviar en `POST /books` el JSON del libro:
+
+   ```json
+   {
+     "title": "1984",
+     "author": "George Orwell",
+     "description": "Una novela distópica sobre el control y la vigilancia."
+   }
+   ```
+4. Cualquier usuario (incluso sin token) puede hacer `GET /public/books` para ver los libros.
+
+---
+
+## 📑 Swagger
+
+La documentación Swagger está disponible en:
+
+```
+http://localhost:3000/api
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## ✅ Requerimientos evaluados
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+* [x] Estructura modular NestJS
+* [x] TypeORM con PostgreSQL
+* [x] Autenticación con JWT
+* [x] Rutas protegidas con AuthGuard
+* [x] Documentación Swagger funcional
+* [x] Uso de DTOs para validación
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+---
+
+## 🧪 Ejemplo de usuario (semilla para login)
+
+```sql
+INSERT INTO "user" (email, name, password)
+VALUES ('juan@example.com', 'Juan Pérez', '1234');
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 🧑‍💻 Autor
 
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# Parcial-APIs
+**Diego Morales**
