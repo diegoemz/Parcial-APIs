@@ -1,7 +1,3 @@
-¡Claro! Aquí tienes un `README.md` bien estructurado para tu proyecto **BookSwap API**, siguiendo los puntos que mencionaste:
-
----
-
 ````markdown
 # 📚 BookSwap API
 
@@ -152,15 +148,6 @@ http://localhost:3000/api
 * [x] Rutas protegidas con AuthGuard
 * [x] Documentación Swagger funcional
 * [x] Uso de DTOs para validación
-
----
-
-## 🧪 Ejemplo de usuario (semilla para login)
-
-```sql
-INSERT INTO "user" (email, name, password)
-VALUES ('juan@example.com', 'Juan Pérez', '1234');
-```
 
 ---
 
